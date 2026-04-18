@@ -25,7 +25,7 @@ def pytest_addoption(parser):
     # --- ИЗМЕНЕНИЕ 2: Логические значения лучше хранить как булевы ---
     parser.addoption(
         "--headless",
-        action="store_true",  # Это автоматически создаст переменную True/False
+        choices=("true", "false"),  # строки вместо булевых
         help="Run browser in headless mode"
     )
     parser.addoption(
