@@ -29,13 +29,13 @@ def pytest_addoption(parser):
         help="Run browser in headless mode"
     )
     parser.addoption(
-        "--start-url",
+        "--site-url",
         default="https://the-internet.herokuapp.com/login",
         help="URL for test"
     )
     parser.addoption(
         "--selenoid-url",
-        default="http://localhost:4444/wd/hub",
+        default="selenoid.autotests.cloud/wd/hub",
         help="URL of Selenoid"
     )
     parser.addoption(
@@ -55,7 +55,7 @@ def setup_browser(request):
     browser_name = request.config.getoption("--browser")
     browser_version = request.config.getoption("--browser_version")
     headless = request.config.getoption("--headless")  # Теперь это True или False
-    start_url = request.config.getoption("--start-url")
+    site_url = request.config.getoption("--site-url")
     selenoid_url = request.config.getoption("--selenoid-url")
     window_size = request.config.getoption("--window-size")
 
@@ -72,17 +72,17 @@ def setup_browser(request):
         "selenoid:options": {
             "enableVNC": True,
             "enableVideo": True,
-            "name": f"Test_{request.node.name}"  # Имя теста для видео (опционально)
+            "name": f"Test_{request.node.name}"  # Имя теста для видео
         }
     }
     options.capabilities.update(selenoid_capabilities)
 
     driver = webdriver.Remote(
-        command_executor=f"{selenoid_url}",  # Просто чистый URL без login:password@
+        command_executor = f"https://{login}:{password}@{selenoid_url}",
         options=options
     )
 
-    driver.get(start_url)
+    driver.get(site_url)
 
     yield driver
 
